@@ -29,7 +29,8 @@ html, body { height: 100%; margin: 0; background: var(--mer); color: var(--texte
 .leaflet-container { background: var(--mer); font-family: var(--font-texte); outline: none; }
 .leaflet-control-attribution { background: color-mix(in srgb, var(--mer) 75%, transparent) !important; color: var(--texte-doux); font-size: 10px; }
 .leaflet-control-attribution a { color: var(--texte-doux); }
-.leaflet-tile-pane { filter: sepia(.25) hue-rotate(215deg) saturate(1.3) brightness(1.08); }
+/* Fond OpenStreetMap passé en version nuit, teinté prune */
+.leaflet-tile-pane { filter: invert(1) hue-rotate(180deg) saturate(.15) brightness(.8) contrast(1.15) sepia(.35) hue-rotate(220deg) saturate(1.6); }
 
 .etiquette {
   position: absolute; z-index: 1000; top: 14px; left: 14px; max-width: calc(100% - 28px);
