@@ -1,0 +1,58 @@
+name: Synchroniser et publier la carte
+
+on:
+  push:
+    branches: [main]
+  schedule:
+    - cron: "17 * * * *"   # toutes les heures
+  workflow_dispatch:        # bouton « Run workflow » pour lancer à la main
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: carte
+  cancel-in-progress: false
+
+jobs:
+  carte:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploiement.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Lire Notion et chiffrer
+        env:
+          NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
+          CODE_CARTE: ${{ secrets.CODE_CARTE }}
+        run: node sync.mjs
+
+      - name: Garder la copie dans le dépôt si elle a changé
+        run: |
+          if [ -n "$(git status --porcelain data.json)" ]; then
+            git config user.name "bisous-bot"
+            git config user.email "bisous-bot@users.noreply.github.com"
+            git add data.json
+            git commit -m "Nouveaux baisers 💋 [skip ci]"
+            git push
+          fi
+
+      - name: Préparer le site
+        run: |
+          mkdir -p _site
+          cp index.html app.js data.json _site/
+
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+      - id: deploiement
+        uses: actions/deploy-pages@v4
