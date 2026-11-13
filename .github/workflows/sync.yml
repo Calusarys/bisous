@@ -48,7 +48,7 @@ jobs:
       - name: Préparer le site
         run: |
           mkdir -p _site
-          cp index.html app.js data.json _site/
+          cp index.html app.js data.json favicon.svg favicon-32.png apple-touch-icon.png _site/
 
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
